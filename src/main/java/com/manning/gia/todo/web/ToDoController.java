@@ -65,7 +65,7 @@ public class ToDoController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String updateItem(@RequestParam Long id, @RequestParam String name, @RequestParam String filter) {
-        ToDoItem toDoItem = toDoRepository.findOne(id);
+        ToDoItem toDoItem = toDoRepository.findById(id).orElse(null);
 
         if(toDoItem != null) {
             toDoItem.setName(name);
@@ -77,7 +77,7 @@ public class ToDoController {
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public String deleteItem(@RequestParam Long id, @RequestParam String filter) {
-        ToDoItem toDoItem = toDoRepository.findOne(id);
+        ToDoItem toDoItem = toDoRepository.findById(id).orElse(null);
 
         if(toDoItem != null) {
             toDoRepository.delete(toDoItem);
@@ -88,7 +88,7 @@ public class ToDoController {
 
     @RequestMapping(value = "/toggleStatus", method = RequestMethod.POST)
     public String toggleStatus(@RequestParam Long id, @RequestParam(required = false) Boolean toggle, @RequestParam String filter) {
-        ToDoItem toDoItem = toDoRepository.findOne(id);
+        ToDoItem toDoItem = toDoRepository.findById(id).orElse(null);
 
         if(toDoItem != null) {
             boolean completed = (toggle == null || toggle == Boolean.FALSE) ? false : true;

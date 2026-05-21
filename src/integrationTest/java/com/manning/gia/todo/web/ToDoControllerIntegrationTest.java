@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -32,7 +32,7 @@ public class ToDoControllerIntegrationTest {
     @Test
     public void testIndexRedirectsToListPage() throws Exception {
         mvc.perform(get("/")).andExpect(redirectedUrl("/all"));
-        verifyZeroInteractions(toDoRepository);
+        verifyNoInteractions(toDoRepository);
     }
 
     @Test
@@ -120,7 +120,7 @@ public class ToDoControllerIntegrationTest {
     @Test
     public void testCanUpdateItemIfFound() throws Exception {
         ToDoItem toDoItem = createToDoItem(123L, "Buy milk", false);
-        given(toDoRepository.findOne(123L)).willReturn(toDoItem);
+        given(toDoRepository.findById(123L)).willReturn(java.util.Optional.of(toDoItem));
         mvc.perform(post("/update")
                 .param("id", "123")
                 .param("name", "Wash dishes")
@@ -133,7 +133,7 @@ public class ToDoControllerIntegrationTest {
 
     @Test
     public void testIgnoresUpdateIfItemNotFound() throws Exception {
-        given(toDoRepository.findOne(123L)).willReturn(null);
+        given(toDoRepository.findById(123L)).willReturn(java.util.Optional.empty());
         verifyNoMoreInteractions(toDoRepository);
         mvc.perform(post("/update")
                 .param("id", "123")
@@ -146,7 +146,7 @@ public class ToDoControllerIntegrationTest {
     @Test
     public void testCanDeleteItemIfFound() throws Exception {
         ToDoItem toDoItem = createToDoItem(123L, "Buy milk", false);
-        given(toDoRepository.findOne(123L)).willReturn(toDoItem);
+        given(toDoRepository.findById(123L)).willReturn(java.util.Optional.of(toDoItem));
         mvc.perform(post("/delete")
                 .param("id", "123")
                 .param("filter", "/all"))
@@ -157,7 +157,7 @@ public class ToDoControllerIntegrationTest {
 
     @Test
     public void testIgnoresDeleteIfItemNotFound() throws Exception {
-        given(toDoRepository.findOne(123L)).willReturn(null);
+        given(toDoRepository.findById(123L)).willReturn(java.util.Optional.empty());
         verifyNoMoreInteractions(toDoRepository);
         mvc.perform(post("/delete")
                 .param("id", "123")
@@ -169,7 +169,7 @@ public class ToDoControllerIntegrationTest {
     @Test
     public void testCanToggleStatusForItemIfFound() throws Exception {
         ToDoItem toDoItem = createToDoItem(123L, "Buy milk", false);
-        given(toDoRepository.findOne(123L)).willReturn(toDoItem);
+        given(toDoRepository.findById(123L)).willReturn(java.util.Optional.of(toDoItem));
         mvc.perform(post("/toggleStatus")
                 .param("id", "123")
                 .param("toggle", "true")
@@ -182,7 +182,7 @@ public class ToDoControllerIntegrationTest {
 
     @Test
     public void testIgnoresToggleStatusIfItemNotFound() throws Exception {
-        given(toDoRepository.findOne(123L)).willReturn(null);
+        given(toDoRepository.findById(123L)).willReturn(java.util.Optional.empty());
         verifyNoMoreInteractions(toDoRepository);
         mvc.perform(post("/toggleStatus")
                 .param("id", "123")

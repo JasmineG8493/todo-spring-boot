@@ -25,13 +25,13 @@ public class ToDoRepositoryIntegrationTest {
 
     @Test
     public void testCanFindSingleNonExistingToDoItem() {
-        assertNull(repository.findOne(20000L));
+        assertNull(repository.findById(20000L).orElse(null));
     }
 
     @Test
     public void testCanFindSingleExistingToDoItem() {
         ToDoItem toDoItem = persistToDoItem("Buy milk");
-        assertNotNull(repository.findOne(toDoItem.getId()));
+        assertNotNull(repository.findById(toDoItem.getId()).orElse(null));
     }
 
     @Test
@@ -41,7 +41,7 @@ public class ToDoRepositoryIntegrationTest {
         List<Long> ids = new ArrayList<>();
         ids.add(toDoItem1.getId());
         ids.add(toDoItem2.getId());
-        assertEquals(repository.findAll(ids).size(),2);
+        assertEquals(repository.findAllById(ids).size(),2);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class ToDoRepositoryIntegrationTest {
         ToDoItem toDoItem = persistToDoItem("Buy milk");
         assertNotNull(toDoItem.getId());
         repository.delete(toDoItem);
-        assertFalse(repository.exists(toDoItem.getId()));
+        assertFalse(repository.existsById(toDoItem.getId()));
     }
 
     @Test
@@ -66,7 +66,7 @@ public class ToDoRepositoryIntegrationTest {
         assertNotNull(toDoItem.getId());
         toDoItem.setName("Clean dishes");
         repository.save(toDoItem);
-        assertEquals(repository.findOne(toDoItem.getId()).getName(), "Clean dishes");
+        assertEquals(repository.findById(toDoItem.getId()).orElse(null).getName(), "Clean dishes");
     }
 
     private ToDoItem persistToDoItem(String name) {
